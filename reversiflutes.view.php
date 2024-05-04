@@ -41,7 +41,23 @@ class view_reversiflutes_reversiflutes extends game_view
         $players_nbr = count( $players );
 
         /*********** Place your code below:  ************/
+        $this->page->begin_block( "reversiflutes_reversiflutes", "square" );
 
+        $hor_scale = 64.8; // Constant for square width
+        $ver_scale = 64.4; // Constant for square height
+        for( $x=1; $x<=8; $x++ ) // Loop the 8 columns..
+        {
+            for( $y=1; $y<=8; $y++ ) // Loop the 8 rows..
+            {
+                // Inserts the code found at the square block based on the variables.
+                $this->page->insert_block( "square", array(
+                    'X' => $x,
+                    'Y' => $y,
+                    'LEFT' => round( ($x-1)*$hor_scale+10 ),
+                    'TOP' => round( ($y-1)*$ver_scale+7 )
+                ) );
+            }
+        }
 
         /*
         
