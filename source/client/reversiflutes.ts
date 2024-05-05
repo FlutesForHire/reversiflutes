@@ -9,110 +9,109 @@
  */
 /// <amd-module name="bgagame/reversiflutes"/>
 
-import Gamegui = require('ebg/core/gamegui');
+import Gamegui = require("ebg/core/gamegui");
 import "ebg/counter";
 
 /** The root for all of your game code. */
-class ReversiFlutes extends Gamegui
-{
-	// myGlobalValue: number = 0;
-	// myGlobalArray: string[] = [];
+class ReversiFlutes extends Gamegui {
+  // myGlobalValue: number = 0;
+  // myGlobalArray: string[] = [];
 
-	/** @gameSpecific See {@link Gamegui} for more information. */
-	constructor(){
-		super();
-		console.log('reversiflutes constructor');
-	}
+  /** @gameSpecific See {@link Gamegui} for more information. */
+  constructor() {
+    super();
+    console.log("reversiflutes constructor");
+  }
 
-	/** @gameSpecific See {@link Gamegui.setup} for more information. */
-	setup(gamedatas: Gamedatas): void
-	{
-		console.log( "Starting game setup" );
-		
-		this.addTokenOnBoard( 2, 2, this.player_id );
-		this.addTokenOnBoard( 6, 3, this.player_id );
-		
-		
-		this.setupNotifications();
+  /** @gameSpecific See {@link Gamegui.setup} for more information. */
+  setup(gamedatas: Gamedatas): void {
+    console.log("Starting game setup");
 
-		console.log( "Ending game setup" );
-	}
+    // Place the tokens on the board
+    for (let i in gamedatas.board) {
+      let square = gamedatas.board[i];
 
-	///////////////////////////////////////////////////
-	//// Game & client states
-	
-	/** @gameSpecific See {@link Gamegui.onEnteringState} for more information. */
-	onEnteringState(stateName: GameStateName, args: CurrentStateArgs): void
-	{
-		console.log( 'Entering state: '+stateName );
-		
-		switch( stateName )
-		{
-		case 'dummmy':
-			break;
-		}
-	}
+      if (square?.player)
+        // If square is defined and has a player
+        this.addTokenOnBoard(square.x, square.y, square.player);
+    }
 
-	/** @gameSpecific See {@link Gamegui.onLeavingState} for more information. */
-	onLeavingState(stateName: GameStateName): void
-	{
-		console.log( 'Leaving state: '+stateName );
-		
-		switch( stateName )
-		{
-		case 'dummmy':
-			break;
-		}
-	}
+    this.setupNotifications();
 
-	/** @gameSpecific See {@link Gamegui.onUpdateActionButtons} for more information. */
-	onUpdateActionButtons(stateName: GameStateName, args: AnyGameStateArgs | null): void
-	{
-		console.log( 'onUpdateActionButtons: ' + stateName, args );
+    console.log("Ending game setup");
+  }
 
-		if(!this.isCurrentPlayerActive())
-			return;
+  ///////////////////////////////////////////////////
+  //// Game & client states
 
-		switch( stateName )
-		{
-		case 'dummmy':
-			// Add buttons if needed
-			break;
-		}
-	}
+  /** @gameSpecific See {@link Gamegui.onEnteringState} for more information. */
+  onEnteringState(stateName: GameStateName, args: CurrentStateArgs): void {
+    console.log("Entering state: " + stateName);
 
-	///////////////////////////////////////////////////
-	//// Utility methods
-	
-/** Adds a token matching the given player to the board at the specified location. */
-addTokenOnBoard( x: number, y: number, player_id: number )
-{
-    let player = this.gamedatas.players[ player_id ];
-    if (!player)
-        throw new Error( 'Unknown player id: ' + player_id );
+    switch (stateName) {
+      case "dummmy":
+        break;
+    }
+  }
 
-    dojo.place( this.format_block( 'jstpl_token', {
+  /** @gameSpecific See {@link Gamegui.onLeavingState} for more information. */
+  onLeavingState(stateName: GameStateName): void {
+    console.log("Leaving state: " + stateName);
+
+    switch (stateName) {
+      case "dummmy":
+        break;
+    }
+  }
+
+  /** @gameSpecific See {@link Gamegui.onUpdateActionButtons} for more information. */
+  onUpdateActionButtons(
+    stateName: GameStateName,
+    args: AnyGameStateArgs | null
+  ): void {
+    console.log("onUpdateActionButtons: " + stateName, args);
+
+    if (!this.isCurrentPlayerActive()) return;
+
+    switch (stateName) {
+      case "dummmy":
+        // Add buttons if needed
+        break;
+    }
+  }
+
+  ///////////////////////////////////////////////////
+  //// Utility methods
+
+  /** Adds a token matching the given player to the board at the specified location. */
+  addTokenOnBoard(x: number, y: number, player_id: number) {
+    let player = this.gamedatas.players[player_id];
+    if (!player) throw new Error("Unknown player id: " + player_id);
+
+    dojo.place(
+      this.format_block("jstpl_token", {
         x_y: `${x}_${y}`,
-        color: player.color
-    } ) , 'board' );
+        color: player.color,
+      }),
+      "board"
+    );
 
-    this.placeOnObject( `token_${x}_${y}`, `overall_player_board_${player_id}` );
-    this.slideToObject( `token_${x}_${y}`, `square_${x}_${y}` ).play();
-}
+    this.placeOnObject(`token_${x}_${y}`, `overall_player_board_${player_id}`);
+    this.slideToObject(`token_${x}_${y}`, `square_${x}_${y}`).play();
+  }
 
+  ///////////////////////////////////////////////////
+  //// Player's action
 
-	///////////////////////////////////////////////////
-	//// Player's action
-	
-	/*
+  /*
 		Here, you are defining methods to handle player's action (ex: results of mouse click on game objects).
 		
 		Most of the time, these methods:
 		- check the action is possible at this game state.
 		- make a call to the game server
 	*/
-	
-	/*
+
+  /*
 	Example:
 	onMyMethodToCall1( evt: Event )
 	{
@@ -146,24 +145,23 @@ addTokenOnBoard( x: number, y: number, player_id: number )
 	}
 	*/
 
-	///////////////////////////////////////////////////
-	//// Reaction to cometD notifications
+  ///////////////////////////////////////////////////
+  //// Reaction to cometD notifications
 
-	/** @gameSpecific See {@link Gamegui.setupNotifications} for more information. */
-	setupNotifications()
-	{
-		console.log( 'notifications subscriptions setup' );
-		
-		// TODO: here, associate your game notifications with local methods
-		
-		// With base Gamegui class...
-		// dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
+  /** @gameSpecific See {@link Gamegui.setupNotifications} for more information. */
+  setupNotifications() {
+    console.log("notifications subscriptions setup");
 
-		// With GameguiCookbook::Common class...
-		// this.subscribeNotif( 'cardPlayed', this.notif_cardPlayed ); // Adds type safety to the subscription
-	}
+    // TODO: here, associate your game notifications with local methods
 
-	/*
+    // With base Gamegui class...
+    // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
+
+    // With GameguiCookbook::Common class...
+    // this.subscribeNotif( 'cardPlayed', this.notif_cardPlayed ); // Adds type safety to the subscription
+  }
+
+  /*
 	Example:
 	
 	// The argument here should be one of there things:
@@ -178,7 +176,6 @@ addTokenOnBoard( x: number, y: number, player_id: number )
 	*/
 }
 
-
 // The global 'bgagame.reversiflutes' class is instantiated when the page is loaded. The following code sets this variable to your game class.
-dojo.setObject( "bgagame.reversiflutes", ReversiFlutes );
+dojo.setObject("bgagame.reversiflutes", ReversiFlutes);
 // Same as: (window.bgagame ??= {}).reversiflutes = ReversiFlutes;

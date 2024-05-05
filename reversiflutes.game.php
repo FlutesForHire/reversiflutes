@@ -74,7 +74,6 @@ class ReversiFlutes extends Table
         }
         $sql .= implode( ',', $values );
         $this->DbQuery( $sql );
-        $this->reattributeColorsBasedOnPreferences( $players, $gameinfos['player_colors'] );
         $this->reloadPlayersBasicInfos();
         
         /************ Start the game initialization *****/
@@ -88,7 +87,25 @@ class ReversiFlutes extends Table
         //$this->initStat( 'player', 'player_teststat1', 0 );  // Init a player statistics (for all players)
 
         // TODO: setup the initial game situation here
-       
+               // Init the board
+               $sql = "INSERT INTO board (board_x,board_y,board_player) VALUES ";
+               $sql_values = array();
+               list( $blackplayer_id, $whiteplayer_id ) = array_keys( $players );
+               for( $x=1; $x<=8; $x++ )
+               {
+                   for( $y=1; $y<=8; $y++ )
+                   {
+                       $token_value = "NULL";
+                       if( ($x==4 && $y==4) || ($x==5 && $y==5) )  // Initial positions of white player
+                           $token_value = "'$whiteplayer_id'";
+                       else if( ($x==4 && $y==5) || ($x==5 && $y==4) )  // Initial positions of black player
+                           $token_value = "'$blackplayer_id'";
+                           
+                       $sql_values[] = "('$x','$y',$token_value)";
+                   }
+               }
+               $sql .= implode( ',', $sql_values );
+               self::DbQuery( $sql );
 
         // Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();
@@ -113,11 +130,15 @@ class ReversiFlutes extends Table
     
         // Get information about players
         // Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
-        $sql = "SELECT player_id id, player_score score FROM player ";
+        $sql = "SELECT player_id id, player_score score, player_color color FROM player ";
         $result['players'] = $this->getCollectionFromDb( $sql );
   
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
-  
+          // Get reversi board token
+          $sql = "SELECT board_x x, board_y y, board_player player
+          FROM board WHERE board_player IS NOT NULL";
+  $result['board'] = self::getObjectListFromDB( $sql );
+
         return $result;
     }
 
