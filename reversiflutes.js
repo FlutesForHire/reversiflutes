@@ -25,9 +25,8 @@ define("bgagame/reversiflutes", ["require", "exports", "ebg/core/gamegui", "ebg/
         }
         ReversiFlutes.prototype.setup = function (gamedatas) {
             console.log("Starting game setup");
-            for (var player_id in gamedatas.players) {
-                var player = gamedatas.players[player_id];
-            }
+            this.addTokenOnBoard(2, 2, this.player_id);
+            this.addTokenOnBoard(6, 3, this.player_id);
             this.setupNotifications();
             console.log("Ending game setup");
         };
@@ -53,6 +52,17 @@ define("bgagame/reversiflutes", ["require", "exports", "ebg/core/gamegui", "ebg/
                 case 'dummmy':
                     break;
             }
+        };
+        ReversiFlutes.prototype.addTokenOnBoard = function (x, y, player_id) {
+            var player = this.gamedatas.players[player_id];
+            if (!player)
+                throw new Error('Unknown player id: ' + player_id);
+            dojo.place(this.format_block('jstpl_token', {
+                x_y: "".concat(x, "_").concat(y),
+                color: player.color
+            }), 'board');
+            this.placeOnObject("token_".concat(x, "_").concat(y), "overall_player_board_".concat(player_id));
+            this.slideToObject("token_".concat(x, "_").concat(y), "square_".concat(x, "_").concat(y)).play();
         };
         ReversiFlutes.prototype.setupNotifications = function () {
             console.log('notifications subscriptions setup');

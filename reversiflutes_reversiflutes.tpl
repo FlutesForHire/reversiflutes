@@ -43,6 +43,7 @@ var jstpl_some_game_item='<div class="my_game_item" id="my_game_item_${MY_ITEM_I
 
 */
 
+var jstpl_token='<div class="token tokencolor_${color}" id="token_${x_y}"></div>';
 
 </script>  
 
