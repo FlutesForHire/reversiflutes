@@ -18,6 +18,7 @@ declare global {
 
 	/** @gameSpecific Add game specific gamedatas arguments here. See {@link Gamedatas} for more information. */
 	interface Gamedatas {
+		board: { x: number, y: number, player: number }[];
 		// [key: string | number]: Record<keyof any, any>; // Uncomment to remove type safety on game state arguments
 	}
 

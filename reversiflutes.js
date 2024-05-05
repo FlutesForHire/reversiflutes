@@ -20,52 +20,55 @@ define("bgagame/reversiflutes", ["require", "exports", "ebg/core/gamegui", "ebg/
         __extends(ReversiFlutes, _super);
         function ReversiFlutes() {
             var _this = _super.call(this) || this;
-            console.log('reversiflutes constructor');
+            console.log("reversiflutes constructor");
             return _this;
         }
         ReversiFlutes.prototype.setup = function (gamedatas) {
             console.log("Starting game setup");
-            this.addTokenOnBoard(2, 2, this.player_id);
-            this.addTokenOnBoard(6, 3, this.player_id);
+            for (var i in gamedatas.board) {
+                var square = gamedatas.board[i];
+                if (square === null || square === void 0 ? void 0 : square.player)
+                    this.addTokenOnBoard(square.x, square.y, square.player);
+            }
             this.setupNotifications();
             console.log("Ending game setup");
         };
         ReversiFlutes.prototype.onEnteringState = function (stateName, args) {
-            console.log('Entering state: ' + stateName);
+            console.log("Entering state: " + stateName);
             switch (stateName) {
-                case 'dummmy':
+                case "dummmy":
                     break;
             }
         };
         ReversiFlutes.prototype.onLeavingState = function (stateName) {
-            console.log('Leaving state: ' + stateName);
+            console.log("Leaving state: " + stateName);
             switch (stateName) {
-                case 'dummmy':
+                case "dummmy":
                     break;
             }
         };
         ReversiFlutes.prototype.onUpdateActionButtons = function (stateName, args) {
-            console.log('onUpdateActionButtons: ' + stateName, args);
+            console.log("onUpdateActionButtons: " + stateName, args);
             if (!this.isCurrentPlayerActive())
                 return;
             switch (stateName) {
-                case 'dummmy':
+                case "dummmy":
                     break;
             }
         };
         ReversiFlutes.prototype.addTokenOnBoard = function (x, y, player_id) {
             var player = this.gamedatas.players[player_id];
             if (!player)
-                throw new Error('Unknown player id: ' + player_id);
-            dojo.place(this.format_block('jstpl_token', {
+                throw new Error("Unknown player id: " + player_id);
+            dojo.place(this.format_block("jstpl_token", {
                 x_y: "".concat(x, "_").concat(y),
-                color: player.color
-            }), 'board');
+                color: player.color,
+            }), "board");
             this.placeOnObject("token_".concat(x, "_").concat(y), "overall_player_board_".concat(player_id));
             this.slideToObject("token_".concat(x, "_").concat(y), "square_".concat(x, "_").concat(y)).play();
         };
         ReversiFlutes.prototype.setupNotifications = function () {
-            console.log('notifications subscriptions setup');
+            console.log("notifications subscriptions setup");
         };
         return ReversiFlutes;
     }(Gamegui));
