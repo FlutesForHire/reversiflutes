@@ -48,20 +48,14 @@ class ReversiFlutes extends Gamegui {
   onEnteringState(stateName: GameStateName, args: CurrentStateArgs): void {
     console.log("Entering state: " + stateName);
 
-    switch (stateName) {
-      case "dummmy":
-        break;
-    }
+
   }
 
   /** @gameSpecific See {@link Gamegui.onLeavingState} for more information. */
   onLeavingState(stateName: GameStateName): void {
     console.log("Leaving state: " + stateName);
 
-    switch (stateName) {
-      case "dummmy":
-        break;
-    }
+
   }
 
   /** @gameSpecific See {@link Gamegui.onUpdateActionButtons} for more information. */
@@ -73,11 +67,7 @@ class ReversiFlutes extends Gamegui {
 
     if (!this.isCurrentPlayerActive()) return;
 
-    switch (stateName) {
-      case "dummmy":
-        // Add buttons if needed
-        break;
-    }
+
   }
 
   ///////////////////////////////////////////////////

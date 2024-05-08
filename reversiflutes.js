@@ -35,26 +35,14 @@ define("bgagame/reversiflutes", ["require", "exports", "ebg/core/gamegui", "ebg/
         };
         ReversiFlutes.prototype.onEnteringState = function (stateName, args) {
             console.log("Entering state: " + stateName);
-            switch (stateName) {
-                case "dummmy":
-                    break;
-            }
         };
         ReversiFlutes.prototype.onLeavingState = function (stateName) {
             console.log("Leaving state: " + stateName);
-            switch (stateName) {
-                case "dummmy":
-                    break;
-            }
         };
         ReversiFlutes.prototype.onUpdateActionButtons = function (stateName, args) {
             console.log("onUpdateActionButtons: " + stateName, args);
             if (!this.isCurrentPlayerActive())
                 return;
-            switch (stateName) {
-                case "dummmy":
-                    break;
-            }
         };
         ReversiFlutes.prototype.addTokenOnBoard = function (x, y, player_id) {
             var player = this.gamedatas.players[player_id];

@@ -14,62 +14,59 @@
  *
  * !! It is not a good idea to modify this file when a game is running !!
  */
-{
-	"$schema": "../../node_modules/bga-ts-template/schema/gamestates.schema.json",
+ {
+    "$schema": "../../node_modules/bga-ts-template/schema/gamestates.schema.json",
 
-	// The initial state. Please do not modify.
-	"1": {
-		"name": "gameSetup",
-		"description": "",
-		"type": "manager",
-		"action": "stGameSetup",
-		"transitions": { "": 2 }
-	},
+    // The initial state. Please do not modify.
+    "1": {
+        "name": "gameSetup",
+        "description": "",
+        "type": "manager",
+        "action": "stGameSetup",
+        "transitions": { "": 10 }
+    },
 
-	// Note: ID=2: your first state
-	"2": {
-		"name": "dummmy",
-		"description": "${actplayer} must play a card or pass",
-		"descriptionmyturn": "${you} must play a card or pass",
-		"type": "activeplayer",
-		"possibleactions": {
-			"playCard": [{ "name": "card_id", "type": "AT_int" }],
-			"pass": []
-		},
-		"transitions": { "playCard": 2, "pass": 2 }
-	},
+    "10": {
+        "name": "playerTurn",
+        "description": "${actplayer} must play a disc",
+        "descriptionmyturn": "${you} must play a disc",
+        "type": "activeplayer",
+        "args": "argPlayerTurn",
+        "argsType": {
+            "possibleMoves": "boolean[][]"
+        },
+        "possibleactions": {
+            "playDisc": [
+                { "name": "x", "type": "AT_int" },
+                { "name": "y", "type": "AT_int" }
+            ]
+        },
+        "transitions": {
+            "playDisc": 11,
+            "zombiePass": 11
+        }
+    },
 
-/*
-	// Examples:
-	
-	"2": {
-		"name": "nextPlayer",
-		"description": "",
-		"type": "game",
-		"action": "stNextPlayer",
-		"updateGameProgression": true,
-		"transitions": { "endGame": 99, "nextPlayer": 10 }
-	},
+    "11": {
+        "name": "nextPlayer",
+        "type": "game",
+        "action": "stNextPlayer",
+        "updateGameProgression": true,
+        "transitions": {
+            "nextTurn": 10,
+            "cantPlay": 11,
+            "endGame": 99
+        }
+    },
 
-	"10": {
-		"name": "playerTurn",
-		"description": "${actplayer} must play a card or pass",
-		"descriptionmyturn": "${you} must play a card or pass",
-		"type": "activeplayer",
-		"possibleactions": [ "playCard", "pass" ],
-		"transitions": { "playCard": 2, "pass": 2 }
-	},
-*/
-
-	// Final state.
-	// Please do not modify (and do not overload action/args methods}.
-	"99": {
-		"name": "gameEnd",
-		"description": "End of game",
-		"type": "manager",
-		"action": "stGameEnd",
-		"args": "argGameEnd",
-		/* TODO: get the arguments that are passed at the end of a game.. */
-		"argsType": "object"
-	}
+    // Final state.
+    // Please do not modify (and do not overload action/args methods}.
+    "99": {
+        "name": "gameEnd",
+        "description": "End of game",
+        "type": "manager",
+        "action": "stGameEnd",
+        "args": "argGameEnd",
+        "argsType": "object"
+    }
 }
