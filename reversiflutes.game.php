@@ -284,6 +284,16 @@ class ReversiFlutes extends Table
             SELECT COUNT( board_x ) FROM board WHERE board_player=player_id
             )";
         self::DbQuery($sql);
+
+        // Statistics
+        self::incStat(count($turnedOverDiscs), "turnedOver", $player_id);
+        if (($x == 1 && $y == 1) || ($x == 8 && $y == 1) || ($x == 1 && $y == 8) || ($x == 8 && $y == 8))
+            self::incStat(1, 'discPlayedOnCorner', $player_id);
+        else if ($x == 1 || $x == 8 || $y == 1 || $y == 8)
+            self::incStat(1, 'discPlayedOnBorder', $player_id);
+        else if ($x >= 3 && $x <= 6 && $y >= 3 && $y <= 6)
+            self::incStat(1, 'discPlayedOnCenter', $player_id);
+
         // Notify
         self::notifyAllPlayers("playDisc", clienttranslate('${player_name} plays a disc and turns over ${returned_nbr} disc(s)'), array(
             'player_id' => $player_id,
