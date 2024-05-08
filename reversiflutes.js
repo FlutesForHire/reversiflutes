@@ -31,6 +31,7 @@ define("bgagame/reversiflutes", ["require", "exports", "ebg/core/gamegui", "ebg/
                     this.addTokenOnBoard(square.x, square.y, square.player);
             }
             this.setupNotifications();
+            dojo.query('.square').connect('onclick', this, 'onPlayDisc');
             console.log("Ending game setup");
         };
         ReversiFlutes.prototype.onEnteringState = function (stateName, args) {
@@ -76,6 +77,21 @@ define("bgagame/reversiflutes", ["require", "exports", "ebg/core/gamegui", "ebg/
                 }
             }
             this.addTooltipToClass('possibleMove', '', _('Place a disc here'));
+        };
+        ReversiFlutes.prototype.onPlayDisc = function (evt) {
+            evt.preventDefault();
+            if (!(evt.currentTarget instanceof HTMLElement))
+                throw new Error('evt.currentTarget is null! Make sure that this function is being connected to a DOM HTMLElement.');
+            if (!evt.currentTarget.classList.contains('possibleMove'))
+                return;
+            if (!this.checkAction('playDisc'))
+                return;
+            var _a = evt.currentTarget.id.split('_'), _square_ = _a[0], x = _a[1], y = _a[2];
+            this.ajaxcall("/".concat(this.game_name, "/").concat(this.game_name, "/playDisc.html"), {
+                x: x,
+                y: y,
+                lock: true
+            }, this, function () { });
         };
         ReversiFlutes.prototype.setupNotifications = function () {
             console.log("notifications subscriptions setup");

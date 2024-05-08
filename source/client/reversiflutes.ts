@@ -37,7 +37,7 @@ class ReversiFlutes extends Gamegui {
     }
 
     this.setupNotifications();
-
+    dojo.query( '.square' ).connect( 'onclick', this, 'onPlayDisc' );
     console.log("Ending game setup");
   }
 
@@ -137,39 +137,30 @@ updatePossibleMoves( possibleMoves: boolean[][] )
 		- make a call to the game server
 	*/
 
-  /*
-	Example:
-	onMyMethodToCall1( evt: Event )
-	{
-		console.log( 'onMyMethodToCall1' );
-
-		// Preventing default browser reaction
-		evt.preventDefault();
-
-		//	With base Gamegui class...
-
-		// Check that this action is possible (see "possibleactions" in states.inc.php)
-		if(!this.checkAction( 'myAction' ))
-			return;
-
-		this.ajaxcall( "/yourgamename/yourgamename/myAction.html", { 
-			lock: true, 
-			myArgument1: arg1,
-			myArgument2: arg2,
-		}, this, function( result ) {
-			// What to do after the server call if it succeeded
-			// (most of the time: nothing)
-		}, function( is_error) {
-
-			// What to do after the server call in anyway (success or failure)
-			// (most of the time: nothing)
-		} );
-
-
-		//	With GameguiCookbook::Common...
-		this.ajaxAction( 'myAction', { myArgument1: arg1, myArgument2: arg2 }, (is_error) => {} );
-	}
-	*/
+  onPlayDisc( evt: Event )
+  {
+      // Stop this event propagation
+      evt.preventDefault();
+  
+      if (!(evt.currentTarget instanceof HTMLElement))
+          throw new Error('evt.currentTarget is null! Make sure that this function is being connected to a DOM HTMLElement.');
+  
+      // Check if this is a possible move
+      if( !evt.currentTarget.classList.contains('possibleMove') )
+          return;
+  
+      // Check that this action is possible at this moment (shows error dialog if not possible)
+      if( !this.checkAction( 'playDisc' ) )
+          return;
+  
+      // Get the clicked square x and y
+      // Note: square id format is "square_X_Y"
+      let [_square_, x, y] = evt.currentTarget.id.split('_');
+  
+      this.ajaxcall( `/${this.game_name}/${this.game_name}/playDisc.html`, {
+          x, y, lock: true
+      }, this, function() {} );
+  }
 
   ///////////////////////////////////////////////////
   //// Reaction to cometD notifications
