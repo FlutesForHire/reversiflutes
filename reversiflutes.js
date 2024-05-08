@@ -94,7 +94,35 @@ define("bgagame/reversiflutes", ["require", "exports", "ebg/core/gamegui", "ebg/
             }, this, function () { });
         };
         ReversiFlutes.prototype.setupNotifications = function () {
-            console.log("notifications subscriptions setup");
+            console.log('notifications subscriptions setup');
+            dojo.subscribe('playDisc', this, "notif_playDisc");
+            this.notifqueue.setSynchronous('playDisc', 500);
+            dojo.subscribe('turnOverDiscs', this, "notif_turnOverDiscs");
+            this.notifqueue.setSynchronous('turnOverDiscs', 1000);
+            dojo.subscribe('newScores', this, "notif_newScores");
+            this.notifqueue.setSynchronous('newScores', 500);
+        };
+        ReversiFlutes.prototype.notif_playDisc = function (notif) {
+            this.clearPossibleMoves();
+            this.addTokenOnBoard(notif.args.x, notif.args.y, notif.args.player_id);
+        };
+        ReversiFlutes.prototype.notif_turnOverDiscs = function (notif) {
+            for (var i in notif.args.turnedOver) {
+                var token_data = notif.args.turnedOver[i];
+                var token = $("token_".concat(token_data.x, "_").concat(token_data.y));
+                if (!token)
+                    throw new Error("Unknown token element: ".concat(token_data.x, "_").concat(token_data.y, ". Make sure the board grid was set up correctly in the tpl file."));
+                token.classList.toggle('tokencolor_cbcbcb');
+                token.classList.toggle('tokencolor_363636');
+            }
+        };
+        ReversiFlutes.prototype.notif_newScores = function (notif) {
+            for (var player_id in notif.args.scores) {
+                var counter = this.scoreCtrl[player_id];
+                var newScore = notif.args.scores[player_id];
+                if (counter && newScore)
+                    counter.toValue(newScore);
+            }
         };
         return ReversiFlutes;
     }(Gamegui));

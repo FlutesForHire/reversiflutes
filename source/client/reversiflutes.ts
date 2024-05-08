@@ -166,16 +166,49 @@ updatePossibleMoves( possibleMoves: boolean[][] )
   //// Reaction to cometD notifications
 
   /** @gameSpecific See {@link Gamegui.setupNotifications} for more information. */
-  setupNotifications() {
-    console.log("notifications subscriptions setup");
-
-    // TODO: here, associate your game notifications with local methods
-
-    // With base Gamegui class...
-    // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
-
-    // With GameguiCookbook::Common class...
-    // this.subscribeNotif( 'cardPlayed', this.notif_cardPlayed ); // Adds type safety to the subscription
+  setupNotifications()
+  {
+      console.log( 'notifications subscriptions setup' );
+  
+      dojo.subscribe( 'playDisc', this, "notif_playDisc" );
+      this.notifqueue.setSynchronous( 'playDisc', 500 );
+      dojo.subscribe( 'turnOverDiscs', this, "notif_turnOverDiscs" );
+      this.notifqueue.setSynchronous( 'turnOverDiscs', 1000 );
+      dojo.subscribe( 'newScores', this, "notif_newScores" );
+      this.notifqueue.setSynchronous( 'newScores', 500 );
+  }
+  
+  notif_playDisc( notif: NotifAs<'playDisc'> )
+  {
+      this.clearPossibleMoves();
+      this.addTokenOnBoard( notif.args.x, notif.args.y, notif.args.player_id );
+  }
+  
+  notif_turnOverDiscs( notif: NotifAs<'turnOverDiscs'> )
+  {
+      // Change the color of the turned over discs
+      for( var i in notif.args.turnedOver )
+      {
+          let token_data = notif.args.turnedOver[ i ]!;
+          let token = $<HTMLElement>( `token_${token_data.x}_${token_data.y}` );
+  
+          if (!token)
+              throw new Error( `Unknown token element: ${token_data.x}_${token_data.y}. Make sure the board grid was set up correctly in the tpl file.` );
+  
+          token.classList.toggle('tokencolor_cbcbcb');
+          token.classList.toggle('tokencolor_363636');
+      }
+  }
+  
+  notif_newScores( notif: NotifAs<'newScores'> )
+  {
+      for( var player_id in notif.args.scores )
+      {
+          let counter = this.scoreCtrl[ player_id ];
+          let newScore = notif.args.scores[ player_id ];
+          if (counter && newScore)
+              counter.toValue( newScore );
+      }
   }
 
   /*
